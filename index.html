@@ -1,0 +1,57 @@
+<!--JavaScript - Move Object with Arrow Keys using JavaScript Function.-->
+<html>
+    <head>
+        <title>JavaScript - Move Object with Arrow Keys using JavaScript Function.</title>
+        <style>
+            .car {
+                border: 1px solid black;
+                height: 100px;
+                width: 200px;
+            }
+        </style>
+        <script type="text/javascript">
+            //init object globally
+            var car = null;
+            function init() {
+                car = document.getElementById("car");
+                car.style.position = "relative";
+                car.style.left = "0px";
+                car.style.top = "0px";
+            }
+            function getKeyAndMove(e) {
+                var key_code = e.which || e.keyCode;
+                switch (key_code) {
+                    case 37: //left arrow key
+                        moveLeft();
+                        break;
+                    case 38: //Up arrow key
+                        moveUp();
+                        break;
+                    case 39: //right arrow key
+                        moveRight();
+                        break;
+                    case 40: //down arrow key
+                        moveDown();
+                        break;
+                }
+            }
+            function moveLeft() {
+                car.style.left = parseInt(car.style.left) - 5 + "px";
+            }
+            function moveUp() {
+                car.style.top = parseInt(car.style.top) - 5 + "px";
+            }
+            function moveRight() {
+                car.style.left = parseInt(car.style.left) + 5 + "px";
+            }
+            function moveDown() {
+                car.style.top = parseInt(car.style.top) + 5 + "px";
+            }
+            window.onload = init;
+        </script>
+    </head>
+
+    <body onkeydown="getKeyAndMove(event)">
+        <div id="car" class="car"></div>
+    </body>
+</html>
