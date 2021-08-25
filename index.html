@@ -1,96 +1,111 @@
 <html>
-    <head>
-        <style>
-            .car {
-                border: 1px solid black;
-                height: 100px;
-                width: 200px;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                align-items: flex-start;
-                padding: 20px 20px;
-            }
+  <head>
+    <style>
+      .car {
+        height: 100px;
+        width: 200px;
+        background-image: url("car.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+    </style>
+    <script type="text/javascript">
+      //init object globally
+      var car = null;
+      var rotation = 0;
+      var front = "left";
+      function init() {
+        car = document.getElementById("car");
+        car.style.position = "relative";
+        car.style.left = "100px";
+        car.style.top = "100px";
+      }
 
-            .headlight {
-                height: 15px;
-                width: 20px;
-                border-radius: 10px;
-                border: 1px solid black;
-                background-color: yellow;
-            }
-        </style>
-        <script type="text/javascript">
-            //init object globally
-            var car = null;
-            var rotation = 0;
-            var front = 'left';
-            function init() {
-                car = document.getElementById("car");
-                car.style.position = "relative";
-                car.style.left = "100px";
-                car.style.top = "100px";
-            }
+      function getFrontSide() {
+        if (rotation === 0) {
+          return "left";
+        } else if (rotation === 90) {
+          return "top";
+        } else if (rotation === 180) {
+          return "right";
+        } else if (rotation === 270) {
+          return "bottom";
+        }
+      }
 
-            function getFrontSide() {
-                if (rotation === 0 || rotation % 360 === 0) {
-                    return 'left';
-                } else if (rotation % 270 === 0 && ((rotation / 270) % 2 === 0 || isNaN((rotation / 270) % 2))) {
-                    return 'bottom';
-                } else if (rotation % 180 === 0 && ((rotation / 180) %2=== 0 || isNaN((rotation / 180) % 2))) {
-                    return 'right';
-                } else if (rotation % 90 === 0) {
-                    return 'top';
-                }
-            }
-            
-            function getKeyAndMove(e) {
-                var key_code = e.which || e.keyCode;
-                switch (key_code) {
-                    case 37: //left arrow key
-                        rotateLeft();
-                        break;
-                    case 38: //Up arrow key
-                        moveForward();
-                        break;
-                    case 39: //right arrow key
-                        rotateRight();
-                        break;
-                    case 40: //down arrow key
-                        moveBackward();
-                        break;
-                }
-            }
-            function moveForward() {
-                front = getFrontSide();
-                console.log('front',front);
-                car.style[front] = parseInt(car.style[front]) - 5 + "px";
-            }
+      function getKeyAndMove(e) {
+        var key_code = e.which || e.keyCode;
+        switch (key_code) {
+          case 37: //left arrow key
+            rotateLeft();
+            break;
+          case 38: //Up arrow key
+            moveForward();
+            break;
+          case 39: //right arrow key
+            rotateRight();
+            break;
+          case 40: //down arrow key
+            moveBackward();
+            break;
+        }
+        console.log("rotation", rotation);
+      }
+      function moveForward() {
+        front = getFrontSide();
+        var direction = "";
+        if (front === "left" || front === "right") {
+            direction = "left";
+        } else {
+            direction = "top";
+        }
+        console.log("front", front);
+        if(front === "left" || front === "top") {
+        car.style[direction] = parseInt(car.style[direction]) - 5 + "px";
+        } else {
+        car.style[direction] = parseInt(car.style[direction]) + 5 + "px";
+        }
+      }
 
-            function moveBackward() {
-                front = getFrontSide();
-                console.log('front',front);
-                car.style[front] = parseInt(car.style[front]) + 5 + "px";
-            }
+      function moveBackward() {
+        front = getFrontSide();
+        var direction = "";
+        if (front === "left" || front === "right") {
+            direction = "left";
+        } else {
+            direction = "top";
+        }
+        console.log("front", front);
+        if(front === "left" || front === "top") {
+        car.style[direction] = parseInt(car.style[direction]) + 5 + "px";
+        } else {
+        car.style[direction] = parseInt(car.style[direction]) - 5 + "px";
+        }
+      }
 
-            function rotateLeft() {
-                rotation -= 90;
-                car.style.transform = `rotate(${rotation}deg)`;
-            }
+      function rotateLeft() {
+        if (rotation === 0) {
+          rotation = 270;
+        } else {
+          rotation -= 90;
+        }
+        car.style.transform = `rotate(${rotation}deg)`;
+      }
 
-            function rotateRight() {
-                rotation += 90;
-                car.style.transform = `rotate(${rotation}deg)`;
-            }
+      function rotateRight() {
+        if ((rotation === 270)) {
+          rotation = 0;
+        } else {
+          rotation += 90;
+        }
+        car.style.transform = `rotate(${rotation}deg)`;
+      }
 
-            window.onload = init;
-        </script>
-    </head>
+      window.onload = init;
+    </script>
+  </head>
 
-    <body onkeydown="getKeyAndMove(event)">
-        <div id="car" class="car">
-            <div class="headlight"></div>
-            <div class="headlight"></div>
-        </div>
-    </body>
+  <body onkeydown="getKeyAndMove(event)">
+    <div id="car" class="car"></div>
+  </body>
 </html>
