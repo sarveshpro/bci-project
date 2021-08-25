@@ -1,57 +1,96 @@
-<!--JavaScript - Move Object with Arrow Keys using JavaScript Function.-->
 <html>
     <head>
-        <title>JavaScript - Move Object with Arrow Keys using JavaScript Function.</title>
         <style>
             .car {
                 border: 1px solid black;
                 height: 100px;
                 width: 200px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 20px 20px;
+            }
+
+            .headlight {
+                height: 15px;
+                width: 20px;
+                border-radius: 10px;
+                border: 1px solid black;
+                background-color: yellow;
             }
         </style>
         <script type="text/javascript">
             //init object globally
             var car = null;
+            var rotation = 0;
+            var front = 'left';
             function init() {
                 car = document.getElementById("car");
                 car.style.position = "relative";
-                car.style.left = "0px";
-                car.style.top = "0px";
+                car.style.left = "100px";
+                car.style.top = "100px";
             }
+
+            function getFrontSide() {
+                if (rotation === 0 || rotation % 360 === 0) {
+                    return 'left';
+                } else if (rotation % 270 === 0 && ((rotation / 270) % 2 === 0 || isNaN((rotation / 270) % 2))) {
+                    return 'bottom';
+                } else if (rotation % 180 === 0 && ((rotation / 180) %2=== 0 || isNaN((rotation / 180) % 2))) {
+                    return 'right';
+                } else if (rotation % 90 === 0) {
+                    return 'top';
+                }
+            }
+            
             function getKeyAndMove(e) {
                 var key_code = e.which || e.keyCode;
                 switch (key_code) {
                     case 37: //left arrow key
-                        moveLeft();
+                        rotateLeft();
                         break;
                     case 38: //Up arrow key
-                        moveUp();
+                        moveForward();
                         break;
                     case 39: //right arrow key
-                        moveRight();
+                        rotateRight();
                         break;
                     case 40: //down arrow key
-                        moveDown();
+                        moveBackward();
                         break;
                 }
             }
-            function moveLeft() {
-                car.style.left = parseInt(car.style.left) - 5 + "px";
+            function moveForward() {
+                front = getFrontSide();
+                console.log('front',front);
+                car.style[front] = parseInt(car.style[front]) - 5 + "px";
             }
-            function moveUp() {
-                car.style.top = parseInt(car.style.top) - 5 + "px";
+
+            function moveBackward() {
+                front = getFrontSide();
+                console.log('front',front);
+                car.style[front] = parseInt(car.style[front]) + 5 + "px";
             }
-            function moveRight() {
-                car.style.left = parseInt(car.style.left) + 5 + "px";
+
+            function rotateLeft() {
+                rotation -= 90;
+                car.style.transform = `rotate(${rotation}deg)`;
             }
-            function moveDown() {
-                car.style.top = parseInt(car.style.top) + 5 + "px";
+
+            function rotateRight() {
+                rotation += 90;
+                car.style.transform = `rotate(${rotation}deg)`;
             }
+
             window.onload = init;
         </script>
     </head>
 
     <body onkeydown="getKeyAndMove(event)">
-        <div id="car" class="car"></div>
+        <div id="car" class="car">
+            <div class="headlight"></div>
+            <div class="headlight"></div>
+        </div>
     </body>
 </html>
