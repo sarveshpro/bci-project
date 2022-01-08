@@ -1,1 +1,1 @@
-# brain-drive
+# bci-project
