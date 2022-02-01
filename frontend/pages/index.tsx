@@ -3,9 +3,9 @@ import Draggable from "react-draggable";
 import Head from "next/head";
 import { io } from "socket.io-client";
 
-interface Props {}
+interface Props { }
 
-export default function Index({}: Props): ReactElement {
+export default function Index({ }: Props): ReactElement {
 
   const socket = io("http://localhost:8000");
 
@@ -35,40 +35,57 @@ export default function Index({}: Props): ReactElement {
   // control props
   const [play, setPlay] = useState(false);
   const [status, setStatus] = useState("disconnected");
+  const [actionStrength, setActionSrength] = useState(0);
+  const [move, setMove] = useState(false);
 
-  const handleData = (data:any) => {
-    if(data) {
+  const handleData = (data: any) => {
+    if (data) {
       setStatus("connected");
       setData(data);
-      if(data.eSense.attention > 80) {
+      if (data.eSense.attention > 80) {
         moveForward();
       }
-    }  
+    }
   }
 
+  const handleAction = (data: any) => {
+    if (data) {
+      setMove(!move);
+      setActionSrength(data);
+    }
+  }
+
+  const handlePrediction = (data: any) => {
+    if (data) {
+      setPrediction(data);
+    }
+  }
 
   React.useEffect(() => {
-    if(play) {
+    if (play) {
       setStatus("connecting")
       socket.on("connect", () => {
         setStatus("waiting");
         console.log(socket.id);
       });
-    
+
       socket.on("disconnect", () => {
         setStatus("connecting");
         console.log(socket.connected);
       });
-    
-      socket.once("scanning", (scanning:any) => {
-        if(scanning) setStatus('scanning');
+
+      socket.once("scanning", (scanning: any) => {
+        if (scanning) setStatus('scanning');
       });
-    
+
       socket.on("eegData", handleData);
+      socket.on("action", handleAction);
       return () => {
         // unbind all event handlers used in this component
         socket.off("eegData", handleData);
+        socket.off("action", handleAction);
       };
+
     } else {
       socket.disconnect();
       setData(defaultData);
@@ -82,6 +99,14 @@ export default function Index({}: Props): ReactElement {
     car.current.style.top = "140px";
     car.current.style.transform = `rotate(${0}deg)`;
   };
+
+  useEffect(() => {
+    if (move) {
+      setInterval(() => {
+        moveForward();
+      }, 500);
+    }
+  }, [move]);
 
   useEffect(() => {
     reset();
@@ -185,21 +210,21 @@ export default function Index({}: Props): ReactElement {
         <div className="controls">
           <div className="title">Prediction</div>
           {data.eSense.attention > 80 ?
-          <div className="values">
-            {prediction === "forward" ?
-            <>
-            <div className="value">Forward - {`${data.eSense.attention/10}${data.eSense.attention === 100 ? '':Math.floor(Math.random() * 9) + 1}`}</div>
-            <div className="value">Reverse - {`${(data.eSense.meditation-2)/10}`}</div>
-            </>
-            :<>
-            <div className="value">Reverse - {`${data.eSense.attention/10}${Math.floor(Math.random() * 9) + 1}`}</div>
-            <div className="value">Forward - {`${(data.eSense.meditation+1)/10}${Math.floor(Math.random() * 9) + 1}`}</div>
-            </>}
-            {/* <div className="value">Left - 0</div>
+            <div className="values">
+              {prediction === "forward" ?
+                <>
+                  <div className="value">Forward - {`${data.eSense.attention / 10}${data.eSense.attention === 100 ? '' : Math.floor(Math.random() * 9) + 1}`}</div>
+                  <div className="value">Reverse - {`${(data.eSense.meditation - 2) / 10}`}</div>
+                </>
+                : <>
+                  <div className="value">Reverse - {`${data.eSense.attention / 10}${Math.floor(Math.random() * 9) + 1}`}</div>
+                  <div className="value">Forward - {`${(data.eSense.meditation + 1) / 10}${Math.floor(Math.random() * 9) + 1}`}</div>
+                </>}
+              {/* <div className="value">Left - 0</div>
             <div className="value">Right - 0</div> */}
-          </div>:
-          <div className="values">
-            <div className="value">Do nothing</div>
+            </div> :
+            <div className="values">
+              <div className="value">Do nothing</div>
             </div>}
           <div className="buttons">
             <div onClick={moveForward} className="accelerator">
