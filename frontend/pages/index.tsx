@@ -37,6 +37,18 @@ export default function Index({ }: Props): ReactElement {
   const [status, setStatus] = useState("disconnected");
   const [actionStrength, setActionSrength] = useState(0);
   const [move, setMove] = useState(false);
+  const [timeElasped, setTimeElasped] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    if (play) {
+      const time = setInterval(() => {
+        let newTimeElasped = timeElasped + 0.1;
+        newTimeElasped = Math.round(newTimeElasped * 100) / 100;
+        setTimeElasped(newTimeElasped);
+      }, 100);
+      return () => clearInterval(time);
+    }
+  }, [play, timeElasped]);
 
   const handleData = (data: any) => {
     if (data) {
@@ -94,6 +106,8 @@ export default function Index({ }: Props): ReactElement {
   }, [play]);
 
   const reset = () => {
+    setMove(false);
+    setTimeElasped(0);
     car.current.style.position = "relative";
     car.current.style.left = "0px";
     car.current.style.top = "140px";
@@ -102,9 +116,10 @@ export default function Index({ }: Props): ReactElement {
 
   useEffect(() => {
     if (move) {
-      setInterval(() => {
+      const i = setInterval(() => {
         moveForward();
       }, 500);
+      return () => clearInterval(i);
     }
   }, [move]);
 
@@ -246,7 +261,7 @@ export default function Index({ }: Props): ReactElement {
             {play ? "Stop" : "Start"}
           </div>
         </div>
-        <div className="sim-timer">00:10:45:20</div>
+        <div className="sim-timer">{timeElasped}s</div>
         <Draggable axis="x">
           <div ref={car} id="car" className="car">
             <div className="center-axis"></div>
