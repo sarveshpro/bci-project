@@ -54,14 +54,15 @@ export default function Index({ }: Props): ReactElement {
     if (data) {
       setStatus("connected");
       setData(data);
-      if (data.eSense.attention > 80) {
-        moveForward();
-      }
+      // if (data.eSense.attention > 80) {
+      //   moveForward();
+      // }
     }
   }
 
   const handleAction = (data: any) => {
     if (data) {
+      console.log('action', data);
       setMove(!move);
       setActionSrength(data);
     }
