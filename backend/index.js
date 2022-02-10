@@ -1,6 +1,7 @@
 var thinkgear = require("node-thinkgear-sockets");
 var client = thinkgear.createClient({ enableRawOutput: false });
 const { Server } = require("socket.io");
+let move = false;
 
 const io = new Server({
   cors: {
@@ -23,7 +24,7 @@ client.on("data", function (data) {
   if (data.eSense) {
     // console.log('meditation',data.eSense.meditation)
     // console.log('attention',data.eSense.attention)
-    console.log("eegData", data);
+    // console.log("eegData", data);
     io.emit("eegData", data); // This will emit the event to all connected sockets
   } else {
     console.log("scanning", data.poorSignalLevel);
@@ -34,7 +35,8 @@ client.on("data", function (data) {
 
 client.on("blink_data", function (data) {
   console.log("blinked", data.blinkStrength);
-  io.emit("action", data);
+  move = !move;
+  io.emit("action", { action: move, value: data.blinkStrength });
 });
 
 client.connect();

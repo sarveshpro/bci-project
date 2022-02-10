@@ -33,7 +33,10 @@ export default function Index({ }: Props): ReactElement {
       //   socket.off("action", handleAction);
       // }; 
       return () => {
+        socket.off("eegData", handleData);
+        socket.off("action", handleAction);
         socket.disconnect();
+        reset();
       }
     },
     []
@@ -81,7 +84,9 @@ export default function Index({ }: Props): ReactElement {
   }, [play, timeElasped]);
 
   const handleData = (data: any) => {
-    if (play && data) {
+    console.log('here');
+    
+    if (data) {
       setStatus("connected");
       setData(data);
       // if (data.eSense.attention > 80) {
@@ -91,10 +96,10 @@ export default function Index({ }: Props): ReactElement {
   }
 
   const handleAction = (data: any) => {
-    if (play && data) {
+    if (data) {
       console.log('action', data);
-      setMove(!move);
-      setActionSrength(data);
+      setMove(data.action);
+      setActionSrength(data.value);
     }
   }
 
@@ -146,7 +151,7 @@ export default function Index({ }: Props): ReactElement {
   };
 
   useEffect(() => {
-    if (move) {
+    if (play && move) {
       const i = setInterval(() => {
         moveForward();
       }, 500);
