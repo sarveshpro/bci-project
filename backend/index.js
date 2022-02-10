@@ -9,9 +9,9 @@ const io = new Server({
     }});
 
 io.on("connection", (socket) => {
-    console.log('frontend connected');
+    // console.log('frontend connected');
     socket.on('disconnect', () => {
-        console.log('frontend disconnected');
+        // console.log('frontend disconnected');
       });
   });
 
