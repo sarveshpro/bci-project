@@ -85,13 +85,19 @@ export default function Index({ }: Props): ReactElement {
 
   const handleData = (data: any) => {
     console.log('here');
-    
+
     if (data) {
       setStatus("connected");
-      setData(data);
-      // if (data.eSense.attention > 80) {
-      //   moveForward();
-      // }
+      setData(data.data);
+      if (data.data.eSense.attention > 80) {
+        if (data.action) {
+          setPrediction("forward");
+          moveForward();
+        } else {
+          setPrediction("backward");
+          moveBackward();
+        }
+      }
     }
   }
 
@@ -150,14 +156,21 @@ export default function Index({ }: Props): ReactElement {
     car.current.style.transform = `rotate(${0}deg)`;
   };
 
-  useEffect(() => {
-    if (play && move) {
-      const i = setInterval(() => {
-        moveForward();
-      }, 500);
-      return () => clearInterval(i);
-    }
-  }, [move]);
+  // useEffect(() => {
+  //   if (play) {
+  //     if (move) {
+  //       const i = setInterval(() => {
+  //         moveForward();
+  //       }, 500);
+  //       return () => clearInterval(i);
+  //     } else {
+  //       const i = setInterval(() => {
+  //         moveBackward();
+  //       }, 500);
+  //       return () => clearInterval(i);
+  //     }
+  //   }
+  // }, [move]);
 
   useEffect(() => {
     reset();

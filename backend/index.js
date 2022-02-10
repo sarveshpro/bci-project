@@ -29,7 +29,7 @@ client.on(constants.data, function (data) {
     // console.log('meditation',data.eSense.meditation)
     // console.log('attention',data.eSense.attention)
     // console.log("eegData", data);
-    io.emit("eegData", data); // This will emit the event to all connected sockets
+    io.emit("eegData", { action: move, data }); // This will emit the event to all connected sockets
   } else {
     console.log("scanning", data.poorSignalLevel);
     io.emit("scanning", { scanning: true });
