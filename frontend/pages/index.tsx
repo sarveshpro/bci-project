@@ -105,6 +105,11 @@ export default function Index({ }: Props): ReactElement {
     if (data) {
       console.log('action', data);
       setMove(data.action);
+      if(data.action) {
+        setPrediction("forward");
+      } else {
+        setPrediction("backward");
+      }
       setActionSrength(data.value);
     }
   }
@@ -290,6 +295,9 @@ export default function Index({ }: Props): ReactElement {
             <div className="values">
               <div className="value">Do nothing</div>
             </div>}
+            {prediction === "forward" ?
+            <div style={{height:10, width:10, borderRadius:10, backgroundColor:"green"}}></div>
+            : <div style={{height:10, width:10, borderRadius:10, backgroundColor:"blue"}}></div>}
           <div className="buttons">
             <div onClick={moveForward} className="accelerator">
               <img src={"/assets/images/fire.png"} alt="accelerator" />
