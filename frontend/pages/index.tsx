@@ -260,7 +260,7 @@ export default function Index({ }: Props): ReactElement {
         </div>
         <div className="controls">
           <div className="title">Prediction</div>
-          {data.eSense.attention > 80 ?
+          {/* {data.eSense.attention > 80 ?
             <div className="values">
               {prediction === "forward" ?
                 <>
@@ -271,12 +271,12 @@ export default function Index({ }: Props): ReactElement {
                   <div className="value">Reverse - {`${data.eSense.attention / 10}${Math.floor(Math.random() * 9) + 1}`}</div>
                   <div className="value">Forward - {`${(data.eSense.meditation + 1) / 10}${Math.floor(Math.random() * 9) + 1}`}</div>
                 </>}
-              {/* <div className="value">Left - 0</div>
-            <div className="value">Right - 0</div> */}
+             //  <div className="value">Left - 0</div>
+          //  <div className="value">Right - 0</div> 
             </div> :
             <div className="values">
               <div className="value">Do nothing</div>
-            </div>}
+            </div>} */}
           <div className="buttons">
             <div onClick={moveForward} className="accelerator">
               <img src={"/assets/images/fire.png"} alt="accelerator" />
