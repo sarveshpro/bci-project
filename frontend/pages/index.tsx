@@ -7,7 +7,37 @@ interface Props { }
 
 export default function Index({ }: Props): ReactElement {
 
-  const socket = io("http://localhost:8000");
+  // const socket = io("http://localhost:8000");
+
+  useEffect(
+    () => {
+      const socket = io("http://localhost:8000");
+      socket.connect();
+      socket.on("connect", () => {
+        setStatus("waiting");
+        console.log(socket.id);
+      });
+      socket.on("disconnect", () => {
+        setStatus("connecting");
+        console.log(socket.connected);
+      });
+      socket.once("scanning", (scanning: any) => {
+        if (scanning) setStatus('scanning');
+      });
+
+      socket.on("eegData", handleData);
+      socket.on("action", handleAction);
+      // return () => {
+      //   // unbind all event handlers used in this component
+      //   socket.off("eegData", handleData);
+      //   socket.off("action", handleAction);
+      // }; 
+      return () => {
+        socket.disconnect();
+      }
+    },
+    []
+  )
 
   const defaultData = {
     eSense: { attention: 0, meditation: 0 },
@@ -51,7 +81,7 @@ export default function Index({ }: Props): ReactElement {
   }, [play, timeElasped]);
 
   const handleData = (data: any) => {
-    if (data) {
+    if (play && data) {
       setStatus("connected");
       setData(data);
       // if (data.eSense.attention > 80) {
@@ -61,7 +91,7 @@ export default function Index({ }: Props): ReactElement {
   }
 
   const handleAction = (data: any) => {
-    if (data) {
+    if (play && data) {
       console.log('action', data);
       setMove(!move);
       setActionSrength(data);
@@ -74,37 +104,37 @@ export default function Index({ }: Props): ReactElement {
     }
   }
 
-  React.useEffect(() => {
-    if (play) {
-      setStatus("connecting")
-      socket.on("connect", () => {
-        setStatus("waiting");
-        console.log(socket.id);
-      });
+  // React.useEffect(() => {
+  //   if (play) {
+  //     setStatus("connecting")
+  //     socket.on("connect", () => {
+  //       setStatus("waiting");
+  //       console.log(socket.id);
+  //     });
 
-      socket.on("disconnect", () => {
-        setStatus("connecting");
-        console.log(socket.connected);
-      });
+  //     socket.on("disconnect", () => {
+  //       setStatus("connecting");
+  //       console.log(socket.connected);
+  //     });
 
-      socket.once("scanning", (scanning: any) => {
-        if (scanning) setStatus('scanning');
-      });
+  //     socket.once("scanning", (scanning: any) => {
+  //       if (scanning) setStatus('scanning');
+  //     });
 
-      socket.on("eegData", handleData);
-      socket.on("action", handleAction);
-      return () => {
-        // unbind all event handlers used in this component
-        socket.off("eegData", handleData);
-        socket.off("action", handleAction);
-      };
+  //     socket.on("eegData", handleData);
+  //     socket.on("action", handleAction);
+  //     return () => {
+  //       // unbind all event handlers used in this component
+  //       socket.off("eegData", handleData);
+  //       socket.off("action", handleAction);
+  //     };
 
-    } else {
-      socket.disconnect();
-      setData(defaultData);
-      setStatus("disconnected");
-    }
-  }, [play]);
+  //   } else {
+  //     socket.disconnect();
+  //     setData(defaultData);
+  //     setStatus("disconnected");
+  //   }
+  // }, [play]);
 
   const reset = () => {
     setMove(false);
