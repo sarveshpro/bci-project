@@ -1,6 +1,7 @@
 var thinkgear = require("node-thinkgear-sockets");
 var client = thinkgear.createClient({ enableRawOutput: false });
 const { Server } = require("socket.io");
+const constants = require("./constants");
 let move = false;
 
 const io = new Server({
@@ -19,7 +20,10 @@ io.on("connection", (socket) => {
 
 io.listen(8000);
 
-client.on("data", function (data) {
+console.log("client.config", client.config);
+
+client.on(constants.data, function (data) {
+  // console.log("console");
   //magical and wonderful things
   if (data.eSense) {
     // console.log('meditation',data.eSense.meditation)
@@ -32,9 +36,11 @@ client.on("data", function (data) {
     // console.log((new Date).toISOString() + ': ' +JSON.stringify(data));
   }
 });
+// client.connect();
 
-client.on("blink_data", function (data) {
-  console.log("blinked", data.blinkStrength);
+client.on(constants.action, function (data) {
+  const formatData = constants.fotmatData(data);
+  console.log("actions", formatData.strength);
   move = !move;
   io.emit("action", { action: move, value: data.blinkStrength });
 });

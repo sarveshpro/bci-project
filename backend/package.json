@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-thinkgear-sockets": "0.0.1",
+    "node-thinkgear-sockets": "^0.0.1",
     "socket.io": "^4.2.0"
   }
 }
